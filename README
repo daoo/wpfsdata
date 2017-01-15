@@ -1,0 +1,27 @@
+=== WPFSdata ===
+Contributors: daoo
+Tags: fsdata e-mail
+Requires at least: 4.7.1
+License: GPLv3
+
+File based e-mail list management plugin.
+
+== Description ==
+
+== Installation ==
+
+1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory,
+   or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Use it through the tools menu.
+
+== Frequently Asked Questions ==
+
+= Is it any good? =
+
+Yes.
+
+== Changelog ==
+
+= 1.0 =
+* Initial release.
