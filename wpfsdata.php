@@ -107,16 +107,16 @@ function wpfsdata_page() {
   }
 
   if (isset($_POST['edit'])) {
-    $list = $_POST['list'];
+    $list = urldecode($_POST['list']);
     $old = wpfsdata_read_addresses($list);
-    $new = wpfsdata_split($_POST['addresses']);
+    $new = wpfsdata_split(stripslashes($_POST['addresses']));
     list($removed, $added) = wpfsdata_compute_diff($old, $new);
     wpfsdata_confirm_form($list, $removed, $added, $new);
   } else {
     $mailing_lists = wpfsdata_read_mailing_lists();
     if (isset($_POST['yes'])) {
-      $list = $_POST['list'];
-      $new = wpfsdata_split($_POST['addresses']);
+      $list = urldecode($_POST['list']);
+      $new = wpfsdata_split(urldecode($_POST['addresses']));
       $successful = wpfsdata_write_addreses($list, $new);
       $update_notice = $successful
         ? 'Listan uppdaterad!'
@@ -124,7 +124,7 @@ function wpfsdata_page() {
       $addresses = $successful ? $new : wpfsdata_read_addresses($list);
       wpfsdata_edit_form($mailing_lists, $list, $addresses, $update_notice);
     } else {
-      $list = isset($_GET['list']) ? $_GET['list'] : $mailing_lists[0];
+      $list = isset($_GET['list']) ? urldecode($_GET['list']) : $mailing_lists[0];
       $addresses = wpfsdata_read_addresses($list);
       wpfsdata_edit_form($mailing_lists, $list, $addresses, FALSE);
     }

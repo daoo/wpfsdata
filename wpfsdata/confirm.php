@@ -26,7 +26,7 @@ if (empty($removed_addresses) && empty($added_addresses)) {
   <p>Inga ändringar gjorda</p>
   <p>
     <form method="post" action="">
-      <input type="hidden" name="list" value="<?php echo($current_list); ?>" />
+      <input type="hidden" name="list" value="<?php echo(urlencode($current_list)); ?>" />
       <input type="submit" name="ok" class="button-primary" value="Ok" />
     </form>
   </p>
@@ -37,18 +37,18 @@ if (empty($removed_addresses) && empty($added_addresses)) {
 <div class="wrap">
   <h1>E-postlisthantering</h1>
   <h2>Är du säker?</h2>
-  <p>Gör följande ändringar på listan "<?php echo($current_list); ?>":</p>
+  <p>Gör följande ändringar på listan <?php echo(htmlspecialchars($current_list)); ?>:</p>
   <?php if (!empty($removed_addresses)) { ?>
   <h3>Ta bort</h3>
-  <pre><?php echo(implode("\n", $removed_addresses)); ?></pre>
+  <pre><?php echo(htmlspecialchars(implode("\n", $removed_addresses))); ?></pre>
   <?php } ?>
   <?php if (!empty($added_addresses)) { ?>
   <h3>Lägg till</h3>
-  <pre><?php echo(implode("\n", $added_addresses)); ?></pre>
+  <pre><?php echo(htmlspecialchars(implode("\n", $added_addresses))); ?></pre>
   <?php } ?>
   <form method="post" action="">
-    <input type="hidden" name="list" value="<?php echo($current_list); ?>" />
-    <input type="hidden" name="addresses" value="<?php echo(implode("\n", $addresses)); ?>" />
+    <input type="hidden" name="list" value="<?php echo(urlencode($current_list)); ?>" />
+    <input type="hidden" name="addresses" value="<?php echo(urlencode(implode("\n", $addresses))); ?>" />
     <input type="submit" name="yes" class="button-primary" value="Ja" />
     <input type="submit" name="no" class="button-primary" value="Nej" />
   </form>

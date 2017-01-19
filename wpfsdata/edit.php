@@ -29,9 +29,9 @@ defined('ABSPATH') or die();
           $selected = $list === $current_list ? 'selected="selected"' : "";
           printf(
             '<option value="%s" %s>%s</option>',
-            strtolower($list),
+            urlencode($list),
             $selected,
-            $list);
+            htmlspecialchars($list));
         }
       ?>
     </select>
@@ -45,8 +45,8 @@ defined('ABSPATH') or die();
   ?>
   <form method="post" action="">
     <h2>Redigera</h2>
-    <p><textarea name="addresses" rows="20" cols="80"><?php echo(implode("\n", $current_addresses)); ?></textarea></p>
-    <input type="hidden" name="list" value="<?php echo($current_list); ?>" />
+    <p><textarea name="addresses" rows="20" cols="80"><?php echo(htmlspecialchars(implode("\n", $current_addresses))); ?></textarea></p>
+    <input type="hidden" name="list" value="<?php echo(urlencode($current_list)); ?>" />
     <input type="submit" name="edit" class="button-primary" value="Uppdatera" />
   </form>
 </div>
