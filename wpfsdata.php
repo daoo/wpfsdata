@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die();
 
 define('WPFSDATA_DIR', realpath(ABSPATH . '../waff/groupmail'));
-define('WPFSDATA_LOGDIR', realpath(ABSPATH . '../mailinglist'));
+define('WPFSDATA_LOGDIR', realpath(ABSPATH . '../log'));
 
 function wpfsdata_die_permissions() {
   wp_die('You do not have sufficient permission to access this page.');
