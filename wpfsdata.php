@@ -32,6 +32,9 @@ function wpfsdata_die_permissions() {
   wp_die('You do not have sufficient permission to access this page.');
 }
 
+WPFSDATA_DIR or wpfsdata_die_permissions();
+WPFSDATA_LOG or wpfsdata_die_permissions();
+
 function wpfsdata_split($string) {
   return preg_split("/\r\n|\n|\r/", $string);
 }
