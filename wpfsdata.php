@@ -3,7 +3,7 @@
 Plugin Name: WPFSdata
 Plugin URI: github.com/daoo/wpfsdata
 Description: FSData mailing list management plugin.
-Version: 1.0
+Version: 2.0
 Author: Daniel Oom
 License: GPLv2
 
