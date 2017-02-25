@@ -52,7 +52,7 @@ function wpfsdata_list_path($list) {
 }
 
 function wpfsdata_log_path($list, $date, $user) {
-  $path = WPFSDATA_LOGDIR . '/' . $list . '_' $user . '_' . $date . '.txt';
+  $path = WPFSDATA_LOGDIR . '/' . $list . '_' . $user . '_' . $date . '.txt';
   if (strpos($path, WPFSDATA_LOGDIR) !== 0) {
     wpfsdata_die_permissions();
   }
