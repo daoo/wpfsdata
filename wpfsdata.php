@@ -26,14 +26,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die();
 
 define('WPFSDATA_DIR', realpath(ABSPATH . '../waff/groupmail'));
-define('WPFSDATA_LOG', realpath(ABSPATH . '../mailinglist.log'));
+define('WPFSDATA_LOGDIR', realpath(ABSPATH . '../mailinglist'));
 
 function wpfsdata_die_permissions() {
   wp_die('You do not have sufficient permission to access this page.');
 }
 
 WPFSDATA_DIR or wpfsdata_die_permissions();
-WPFSDATA_LOG or wpfsdata_die_permissions();
+WPFSDATA_LOGDIR or wpfsdata_die_permissions();
 
 function wpfsdata_split($string) {
   return preg_split("/\r\n|\n|\r/", $string);
@@ -51,7 +51,19 @@ function wpfsdata_list_path($list) {
   return $path;
 }
 
+function wpfsdata_log_path($list, $date, $user) {
+  $path = WPFSDATA_LOGDIR . '/' . $list . '_' $user . '_' . $date . '.txt';
+  if (strpos($path, WPFSDATA_LOGDIR) !== 0) {
+    wpfsdata_die_permissions();
+  }
+  return $path;
+}
+
 function wpfsdata_read_addresses($list) {
+  return file_get_contents(wpfsdata_list_path($list));
+}
+
+function wpfsdata_read_addresses_split($list) {
   return file(wpfsdata_list_path($list), FILE_IGNORE_NEW_LINES);
 }
 
@@ -61,27 +73,21 @@ function wpfsdata_compute_diff($old, $new) {
   return array($removed, $added);
 }
 
-function wpfsdata_write_addreses($list, $new) {
+function wpfsdata_write_addreses($list, $addresses) {
   assert(strlen($list) > 0);
-  assert(is_array($new));
-  $old = wpfsdata_read_addresses($list);
-  list($removed, $added) = wpfsdata_compute_diff($old, $new);
+  assert(strlen($addresses) >= 0);
   $date = date(DATE_ISO8601);
   $user = wp_get_current_user()->user_login;
-  $log_handle = fopen(WPFSDATA_LOG, 'a');
+  $log_path = wpfsdata_log_path($list, $date, $user);
+  $log_handle = fopen($log_path, 'w');
   if ($log_handle) {
-    foreach ($removed as $address) {
-      fwrite($log_handle, "$date,$user,removed,$address\n");
-    }
-    foreach ($added as $address) {
-      fwrite($log_handle, "$date,$user,added,$address\n");
-    }
+    fwrite($log_handle, $addresses);
     fclose($log_handle);
 
     $list_path = wpfsdata_list_path($list);
     $list_handle = fopen($list_path, 'w');
     if ($list_handle) {
-      fwrite($list_handle, implode("\n", $new));
+      fwrite($list_handle, $addresses);
       fclose($list_handle);
       return true;
     }
@@ -92,7 +98,7 @@ function wpfsdata_write_addreses($list, $new) {
 function wpfsdata_edit_form($mailing_lists, $current_list, $current_addresses, $update_notice) {
   assert(count($mailing_lists) > 0);
   assert(strlen($current_list) > 0);
-  assert(count($current_addresses) >= 0);
+  assert(strlen($current_addresses) >= 0);
   require(plugin_dir_path(__FILE__) . 'wpfsdata/edit.php');
 }
 
@@ -111,7 +117,7 @@ function wpfsdata_page() {
 
   if (isset($_POST['edit'])) {
     $list = urldecode($_POST['list']);
-    $old = wpfsdata_read_addresses($list);
+    $old = wpfsdata_read_addresses_split($list);
     $new = wpfsdata_split(stripslashes($_POST['addresses']));
     list($removed, $added) = wpfsdata_compute_diff($old, $new);
     wpfsdata_confirm_form($list, $removed, $added, $new);
@@ -119,12 +125,12 @@ function wpfsdata_page() {
     $mailing_lists = wpfsdata_read_mailing_lists();
     if (isset($_POST['yes'])) {
       $list = urldecode($_POST['list']);
-      $new = wpfsdata_split(urldecode($_POST['addresses']));
-      $successful = wpfsdata_write_addreses($list, $new);
+      $addresses_updated = urldecode($_POST['addresses']);
+      $successful = wpfsdata_write_addreses($list, $addresses_updated);
       $update_notice = $successful
         ? 'Listan uppdaterad!'
         : 'Uppdatering misslyckades, kontakta administratören.';
-      $addresses = $successful ? $new : wpfsdata_read_addresses($list);
+      $addresses = $successful ? $addresses_updated : wpfsdata_read_addresses($list);
       wpfsdata_edit_form($mailing_lists, $list, $addresses, $update_notice);
     } else {
       $list = isset($_GET['list']) ? urldecode($_GET['list']) : $mailing_lists[0];
