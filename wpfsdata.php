@@ -105,7 +105,7 @@ function wpfsdata_confirm_form($current_list, $removed_addresses, $added_address
 }
 
 function wpfsdata_page() {
-  if (!current_user_can('manage_options'))  {
+  if (!current_user_can('manage_options')) {
     wpfsdata_die_permissions();
   }
 
